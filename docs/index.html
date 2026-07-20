@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TOKI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --accent:#FDB913; --bg:#0B0B0B; --text:#FFFFFF;
+  --muted:rgba(255,255,255,.64); --sublabel:#9A9A9A;
+  --hairline:rgba(255,255,255,.12);
+}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:Rubik,system-ui,'Segoe UI',Arial,sans-serif;
+  font-size:16px; line-height:1.55; font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1280px; margin-inline:auto; padding-inline:24px; padding-block:32px}
+
+/* URLs, English names and the rune must never be mirrored by RTL. */
+.ltr{direction:ltr; unicode-bidi:isolate; display:inline-block}
+.rune{direction:ltr; unicode-bidi:isolate; color:var(--accent)}
+
+header.top{
+  display:flex; align-items:baseline; gap:12px;
+  padding-block-end:24px; border-block-end:1px solid var(--hairline);
+}
+.mark{font-size:32px; line-height:1}
+h1{
+  font-size:32px; font-weight:900; letter-spacing:-.02em;
+  text-transform:uppercase; margin:0;
+}
+.subtitle{color:var(--sublabel); font-size:14px; margin-inline-start:auto; text-align:end}
+
+.stats{display:flex; flex-wrap:wrap; margin-block:0; border-block-end:1px solid var(--hairline)}
+.stat{padding:24px 32px; padding-inline-start:0; min-width:160px}
+.stat + .stat{border-inline-start:1px solid var(--hairline); padding-inline-start:32px}
+.stat .n{font-size:32px; font-weight:800; letter-spacing:-.02em; font-feature-settings:'tnum'}
+.stat .l{font-size:12px; color:var(--sublabel); text-transform:uppercase; letter-spacing:.04em}
+
+.controls{padding-block:24px}
+#q{
+  width:100%; background:transparent; color:var(--text);
+  border:1px solid var(--hairline); border-radius:2px;
+  padding:12px 16px; font-family:inherit; font-size:16px;
+}
+#q:focus{outline:none; border-color:var(--accent)}
+#q::placeholder{color:var(--sublabel)}
+
+.pills{display:flex; flex-wrap:wrap; gap:8px; padding-block-start:16px}
+.pill{
+  display:inline-flex; align-items:center; gap:8px;
+  background:transparent; color:var(--muted); cursor:pointer;
+  border:1px solid var(--hairline); border-radius:2px;
+  padding:8px 12px; font-family:inherit; font-size:14px;
+}
+.pill svg{width:16px; height:16px}
+.pill .c{font-feature-settings:'tnum'; color:var(--sublabel); font-size:12px}
+.pill[aria-pressed="true"]{color:var(--accent); border-color:var(--accent)}
+.pill[aria-pressed="true"] .c{color:var(--accent)}
+
+.grid{
+  display:grid; gap:24px; padding-block:32px;
+  grid-template-columns:repeat(auto-fill,minmax(360px,1fr));
+}
+.card{border:1px solid var(--hairline); border-radius:6px; padding:24px}
+.card.hit{border-color:var(--accent)}
+.meta{
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  font-size:12px; color:var(--sublabel);
+}
+.meta svg{width:14px; height:14px}
+.meta .rel{margin-inline-start:auto; letter-spacing:2px; font-size:14px}
+.rel .off{color:var(--hairline)}
+.card h2{font-size:20px; font-weight:800; letter-spacing:-.01em; margin:12px 0 4px}
+.card .en{color:var(--muted); font-size:14px}
+.card .sum{color:var(--muted); font-size:14px; margin-block-start:12px}
+.tags{display:flex; flex-wrap:wrap; gap:8px; margin-block-start:16px}
+.tag{font-size:12px; color:var(--sublabel); border:1px solid var(--hairline); border-radius:2px; padding:2px 8px}
+.row{display:flex; gap:8px; margin-block-start:16px}
+.btn{
+  background:transparent; color:var(--muted); cursor:pointer;
+  border:1px solid var(--hairline); border-radius:2px;
+  padding:8px 12px; font-family:inherit; font-size:14px; text-decoration:none;
+}
+.btn:hover{color:var(--accent); border-color:var(--accent)}
+
+/* THE ONE INVERSION: an open note body is a white document. Nothing else is light. */
+.doc{
+  display:none; background:#FFFFFF; color:#0B0B0B;
+  border-radius:6px; padding:24px; margin-block-start:16px; font-size:14px;
+}
+.card.open .doc{display:block}
+.doc h3{font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; margin:24px 0 8px}
+.doc h3:first-child{margin-block-start:0}
+.doc ul{margin:0; padding-inline-start:20px}
+.doc li{margin-block-end:4px}
+.doc table{width:100%; border-collapse:collapse; font-size:13px; display:block; overflow-x:auto}
+.doc th,.doc td{border-block-end:1px solid rgba(0,0,0,.12); padding:8px; text-align:start; vertical-align:top}
+.doc th{font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:rgba(11,11,11,.64)}
+.doc a{color:#0B0B0B}
+
+footer{
+  border-block-start:1px solid var(--hairline); padding-block:24px;
+  color:var(--sublabel); font-size:12px;
+}
+.empty{color:var(--sublabel); padding-block:48px; text-align:center}
+
+@media(max-width:640px){
+  .wrap{padding-inline:16px}
+  .grid{grid-template-columns:1fr}
+  .stat{padding-inline:16px; min-width:50%}
+  .stat + .stat{padding-inline-start:16px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="mark rune">ᛏ</span>
+    <h1>Toki</h1>
+    <div class="subtitle">ארכיון ידע מסרטונים קצרים</div>
+  </header>
+
+  <section class="stats">
+    <div class="stat"><div class="n">3</div><div class="l">פתקים</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">קטגוריות</div></div>
+    <div class="stat"><div class="n">3.7</div><div class="l">רלוונטיות ממוצעת</div></div>
+  </section>
+
+  <section class="controls">
+    <input id="q" type="search" placeholder="חיפוש בפתקים — עברית או אנגלית" aria-label="חיפוש">
+    <div class="pills"><button class="pill" data-cat="all" aria-pressed="true"><span>הכל</span><span class="c">3</span></button><button class="pill" data-cat="design" aria-pressed="false"><i data-lucide="palette"></i><span>עיצוב</span><span class="c">2</span></button><button class="pill" data-cat="images" aria-pressed="false"><i data-lucide="image"></i><span>תמונות</span><span class="c">1</span></button></div>
+  </section>
+
+  <main id="grid" class="grid"></main>
+
+  <footer>עודכן <span class="ltr">2026-07-20 10:27</span> <span class="rune">ᛏ</span></footer>
+</div>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>
+window.__CATS__ = {"code": {"he": "קוד ופיתוח", "icon": "code"}, "agents": {"he": "סוכנים וסקילים", "icon": "bot"}, "web": {"he": "בניית אתרים", "icon": "layout-grid"}, "design": {"he": "עיצוב", "icon": "palette"}, "images": {"he": "תמונות", "icon": "image"}, "video": {"he": "וידאו", "icon": "video"}, "methods": {"he": "יכולות ושיטות", "icon": "lightbulb"}, "other": {"he": "אחר", "icon": "more-horizontal"}};
+window.__NOTES__ = [{"id": "notes-design-2026-07-20-4-essential-ui-ux-design-tools-and-inspiration-res", "title_he": "ארבעה כלי עזר ואתרי השראה למעצבי UI/UX", "title_en": "4 Essential UI/UX Design Tools and Inspiration Resources", "category": "design", "relevance": 4, "platform": "instagram", "creator": "Sergey Lyubavsky", "source_url": "https://www.instagram.com/p/Da-qe3Nt6RQ/", "processed": "2026-07-20", "has_speech": false, "tags": ["ui-ux", "design-tools", "web-design", "inspiration", "mockups", "gradients", "dark-mode"], "summary": "אוסף של ארבעה כלים ואתרי השראה ממוקדים למעצבי UI/UX המקצרים את תהליך העבודה. האוסף כולל כלי ליצירת מוקאפים אסתטיים למסכים, גלריית השראה ייעודית לעיצובי פוטרים, מחולל גרדיאנטים תלת-ממדיים מונפשים הנתמך ב-Figma ו-Framer, ופלטפורמת השראה המתמקדת כולה בממשקים במצב כהה (Dark Mode).", "insights": ["שימוש בגלריות נישה ממוקדות (כמו השראה לפוטרים בלבד או עיצובי Dark Mode בלבד) מאפשר למצוא פתרונות עיצוביים מדויקים במהירות רבה יותר מאשר בגלריות עיצוב כלליות.", "שילוב גרדיאנטים דינמיים ומונפשים משדרג את הוויזואליות של אתרים מודרניים, וכלים חדישים מאפשרים לייצא אותם ישירות כקוד React או כאלמנטים בתוך כלי עיצוב."], "tools": [{"name": "Shots.so", "category": "design", "url": "https://shots.so", "desc": "כלי ליצירת מוקאפים (Mockups) מעוצבים ואסתטיים של מסכים, אפליקציות ואתרים בקלות ובמהירות.", "source": "מסך", "verified": "✅"}, {"name": "Footer.design", "category": "design", "url": "https://www.footer.design", "desc": "גלריית השראה ייעודית המתמקדת אך ורק בעיצובי חלק התחתון של אתרים (Footers).", "source": "מסך", "verified": "✅"}, {"name": "ShaderGradient", "category": "design", "url": "https://www.shadergradient.co", "desc": "כלי ליצירת גרדיאנטים תלת-ממדיים מונפשים ונעים, הזמין כתוסף ל-Figma, Framer וכקומפוננטת React.", "source": "מסך", "verified": "✅"}, {"name": "Dark.design", "category": "design", "url": "https://dark.design", "desc": "אתר השראה המציג עיצובים וממשקים נבחרים המתמקדים כולם במצב כהה (Dark Mode).", "source": "מסך", "verified": "✅"}], "actions": ["לשמור בסימניות את Footer.design ו-Dark.design לשימוש בשלב מחקר המשתמש וההשראה (Moodboarding).", "לנסות את Shots.so ליצירת מוקאפים מהירים ומעוצבים עבור מצגות או תיק עבודות.", "לבדוק את התוסף של ShaderGradient ב-Figma או Framer להוספת רקעים דינמיים לעיצובים הבאים."], "verification": ["כל ארבעת האתרים המוצגים בסרטון (Shots.so, Footer.design, ShaderGradient, Dark.design) אומתו ונמצאו פעילים בכתובות המצוינות.", "(העשרה - לא מהסרטון) ShaderGradient מציע אינטגרציה מצוינת ישירות לתוך Framer ו-Figma, מה שמקל על המעבר מעיצוב לפיתוח."], "repos": []}, {"id": "notes-design-2026-07-20-best-design-tools-for-custom-illustrations-and-moo", "title_he": "כלי העיצוב הטובים ביותר לאיורים מותאמים אישית ולוחות השראה", "title_en": "Best Design Tools for Custom Illustrations and Moodboards", "category": "design", "relevance": 4, "platform": "facebook", "creator": "Sergey Lyubavsky", "source_url": "https://www.facebook.com/reel/917721717935392", "processed": "2026-07-20", "has_speech": false, "tags": ["design", "illustrations", "moodboard", "icons", "ui-ux", "free-resources"], "summary": "חמישה כלים מובילים לעיצוב ויזואלי המאפשרים ליצור איורים מותאמים אישית, לבנות לוחות השראה (Moodboards) ולמצוא נכסים גרפיים לפרויקטים. הכלים כוללים מנועי חיפוש ייעודיים ליוצרים, ספריות איורי דמויות הניתנות להרכבה אישית, ומאגרי אייקונים ותמונות חינמיים.", "insights": ["התאמה אישית של איורים (כמו ב-OpenPeeps ו-Sapiens) מאפשרת ליצור שפה חזותית ייחודית למותג ללא צורך במאייר מקצועי מאפס.", "שימוש במנועי חיפוש ייעודיים כמו Flim מקצר משמעותית את זמן העבודה על לוחות השראה (Moodboards) בשלבי הקונספט הראשוניים."], "tools": [{"name": "Flim", "category": "design", "url": "https://flim.ai", "desc": "מנוע חיפוש קריאטיבי המיועד ליצירת לוחות השראה (Moodboards) ומציאת שוטים מסרטים, סדרות ופרסומות.", "source": "מסך", "verified": "✅"}, {"name": "OpenPeeps", "category": "design", "url": "https://openpeeps.com", "desc": "ספריית איורים של דמויות מצוירות ביד חופשית עם מעל ל-34,000 שילובים אפשריים להתאמה אישית של בגדים, תסרוקות והבעות פנים.", "source": "מסך", "verified": "✅"}, {"name": "Lummi", "category": "images", "url": "https://www.lummi.ai", "desc": "מאגר תמונות ואיורים חינמיים שנוצרו בבינה מלאכותית ומיועדים לשימוש בפרויקטים עיצוביים.", "source": "מסך", "verified": "✅"}, {"name": "Sapiens", "category": "design", "url": "https://sapiens.ui8.net", "desc": "כלי ליצירת איורי דמויות (גברים ונשים) בתלת-ממד או דו-ממד עם אפשרויות התאמה אישית של רקעים, תנוחות ופריטים.", "source": "מסך", "verified": "✅"}, {"name": "Icons8", "category": "design", "url": "https://icons8.com", "desc": "פלטפורמה רחבה המציעה אייקונים, איורים, תמונות ומוזיקה להורדה, כולל אפשרויות להתאמה אישית של גדלים וסגנונות.", "source": "מסך", "verified": "✅"}], "actions": ["לבדוק את OpenPeeps ליצירת דמויות מותאמות אישית למצגות או לאתרי אינטרנט.", "להשתמש ב-Flim בפעם הבאה שנדרש לבנות לוח השראה (Moodboard) ויזואלי לפרויקט חדש."], "verification": ["הכלי Flim מופיע על המסך ללא כתובת אתר מפורשת, אך אומת כ-flim.ai.", "הכתובת sapiens.ui8.com המופיעה בסרטון מפנה בפועל לדומיין sapiens.ui8.net.", "הטקסט &quot;Explore Lumi&quot; מתייחס לפלטפורמת Lummi (lummi.ai) המציעה תמונות ואיורי AI חינמיים.", "הנתון &quot;34,688 שילובים אפשריים&quot; עבור OpenPeeps נלקח ישירות מהסרטון ולא אומת עצמאית."], "repos": []}, {"id": "notes-images-2026-07-20-essential-ai-tools-for-ui-ux-designers", "title_he": "ארבעה כלי AI מומלצים למעצבי UI/UX", "title_en": "4 Amazing AI Tools for UI/UX Designers", "category": "images", "relevance": 3, "platform": "youtube", "creator": "Sergey Lyubavsky", "source_url": "https://www.youtube.com/shorts/ppvF56krPec", "processed": "2026-07-20", "has_speech": false, "tags": ["ui-ux", "design-tools", "3d-design", "ai-tools", "website-builder", "product-photography"], "summary": "ארבעה כלים לשיפור זרימת העבודה של מעצבים: יצירת צילומי מוצר מקצועיים בסביבות מעוצבות, הקמת אתרים מלאים מתיאור טקסטואלי פשוט, עיצוב אלמנטים אינטראקטיביים בתלת-ממד בזמן אמת, וניתוח ביצועי קריאייטיב ופרסומות מבוסס מדע המוח.", "insights": ["שילוב כלי תלת-ממד בדפדפן (כמו Spline) מאפשר למעצבי ממשק להוסיף אלמנטים אינטראקטיביים מתקדמים ללא צורך בידע מורכב בפיתוח.", "כלי חיזוי מבוססי מדעי המוח (כמו Neurons) מאפשרים לבצע אופטימיזציה של עיצובים ופרסומות על בסיס ניתוח תשומת לב משוערת עוד לפני שלב הבדיקות בפועל."], "tools": [{"name": "Flair.ai", "category": "images", "url": "https://flair.ai", "desc": "מחולל צילומי מוצר מבוסס בינה מלאכותית, המאפשר למקם מוצרים בסביבות דיגיטליות מעוצבות ומקצועיות בקלות.", "source": "מסך", "verified": "✅"}, {"name": "10Web", "category": "web", "url": "https://10web.io", "desc": "פלטפורמה לבנייה ואירוח של אתרי וורדפרס באמצעות בינה מלאכותית, המאפשרת להפוך רעיון או תיאור לאתר פעיל במהירות.", "source": "מסך", "verified": "✅"}, {"name": "Spline", "category": "design", "url": "https://spline.design", "desc": "כלי לעיצוב ויצירת אלמנטים תלת-ממדיים אינטראקטיביים ישירות בדפדפן, כולל אפשרות לעבודה שיתופית בזמן אמת.", "source": "מסך", "verified": "✅"}, {"name": "Neurons", "category": "other", "url": "https://www.neuronsinc.com", "desc": "פלטפורמה לחיזוי וניתוח תשומת לב של משתמשים בקריאייטיב ופרסומות באמצעות בינה מלאכותית המבוססת על מדעי המוח.", "source": "מסך", "verified": "✅"}], "actions": ["לנסות את Spline ליצירת אלמנט תלת-ממדי פשוט ושילובו באתר אינטרנט.", "לבחון את Flair.ai ליצירת מוקאפים מהירים של מוצרים עבור עיצובי ממשק."], "verification": ["הטענה של 10Web על מעל 2 מיליון אתרים שנוצרו באמצעות הפלטפורמה היא טענה שיווקית של החברה ולא ניתנת לאימות עצמאי.", "המותג Neurons משתמש בדומיין neuronsinc.com, כאשר הסיומת inc היא חלק מהדומיין בלבד ולא משם המותג הרשמי.", "הסרטון קצר מאוד (11 שניות) ואינו כולל הדגמות מעמיקות של הכלים אלא רק מציג את שמותיהם ותיאור קצר שלהם על המסך."], "repos": []}];
+</script>
+<script>
+const CATS = window.__CATS__, NOTES = window.__NOTES__;
+let active = 'all', query = '';
+
+const esc = s => String(s ?? '');
+const icon = c => `<i data-lucide="${CATS[c] ? CATS[c].icon : 'more-horizontal'}"></i>`;
+const relRunes = n => {
+  let out = '';
+  for (let i = 1; i <= 5; i++) out += i <= n ? '<span>ᛏ</span>' : '<span class="off">ᛏ</span>';
+  return out;
+};
+
+function cardHTML(n) {
+  const cat = CATS[n.category] || {he: n.category, icon: 'more-horizontal'};
+  const list = (t, xs) => xs.length ? `<h3>${t}</h3><ul>${xs.map(x => `<li>${x}</li>`).join('')}</ul>` : '';
+  const tools = n.tools.length ? `<h3>כלים</h3><table><thead><tr>
+      <th>שם</th><th>קטגוריה</th><th>קישור</th><th>מה זה עושה</th><th>מקור</th><th>אומת</th></tr></thead><tbody>` +
+    n.tools.map(t => `<tr>
+      <td><span class="ltr">${t.name}</span></td><td>${t.category}</td>
+      <td>${t.url && t.url !== '—' ? `<a class="ltr" href="${t.url}" target="_blank" rel="noopener">${t.url}</a>` : '—'}</td>
+      <td>${t.desc}</td><td>${t.source}</td><td>${t.verified}</td></tr>`).join('') + '</tbody></table>' : '';
+
+  return `<article class="card" id="${n.id}" data-cat="${n.category}">
+    <div class="meta">${icon(n.category)}<span>${cat.he}</span><span>·</span>
+      <span class="ltr">${n.processed}</span><span>·</span><span>${n.creator}</span>
+      <span class="rel rune" title="רלוונטיות ${n.relevance}/5">${relRunes(n.relevance)}</span></div>
+    <h2>${n.title_he}</h2>
+    <div class="en ltr">${n.title_en}</div>
+    <div class="sum">${n.summary}</div>
+    <div class="tags">${n.tags.map(t => `<span class="tag ltr">${t}</span>`).join('')}</div>
+    <div class="row">
+      <button class="btn toggle" aria-expanded="false">פרטים</button>
+      <a class="btn ltr" href="${n.source_url}" target="_blank" rel="noopener">${n.platform}</a>
+    </div>
+    <div class="doc">
+      ${list('תובנות מפתח', n.insights)}${tools}${list('ריפוזיטוריז', n.repos)}
+      ${list('פריטי פעולה', n.actions)}${list('הערות אימות', n.verification)}
+    </div>
+  </article>`;
+}
+
+function render() {
+  const q = query.trim().toLowerCase();
+  const shown = NOTES.filter(n => {
+    if (active !== 'all' && n.category !== active) return false;
+    if (!q) return true;
+    return JSON.stringify(n).toLowerCase().includes(q);
+  });
+  const grid = document.getElementById('grid');
+  grid.innerHTML = shown.length
+    ? shown.map(cardHTML).join('')
+    : '<div class="empty">אין פתקים תואמים</div>';
+  if (window.lucide) lucide.createIcons();
+}
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('.toggle');
+  if (t) {
+    const card = t.closest('.card');
+    const open = card.classList.toggle('open');
+    t.setAttribute('aria-expanded', String(open));
+    t.textContent = open ? 'סגור' : 'פרטים';
+    return;
+  }
+  const p = e.target.closest('.pill');
+  if (p) {
+    active = p.dataset.cat;
+    document.querySelectorAll('.pill').forEach(x =>
+      x.setAttribute('aria-pressed', String(x === p)));
+    render();
+  }
+});
+
+document.getElementById('q').addEventListener('input', e => { query = e.target.value; render(); });
+
+function openHash() {
+  const id = decodeURIComponent(location.hash.slice(1));
+  if (!id) return;
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('open', 'hit');
+  const btn = el.querySelector('.toggle');
+  if (btn) { btn.setAttribute('aria-expanded', 'true'); btn.textContent = 'סגור'; }
+  el.scrollIntoView({behavior: 'smooth', block: 'center'});
+}
+
+window.addEventListener('hashchange', () => { render(); openHash(); });
+render();
+openHash();
+</script>
+</body>
+</html>
