@@ -2,7 +2,7 @@
 
 > ארכיון ידע אישי מסרטונים קצרים — מסווג, מתורגם, ומאומת מול הרשת.
 
-**6 notes** · [Dashboard](https://dartaryan.github.io/toki-bot/)
+**7 notes** · [Dashboard](https://dartaryan.github.io/toki-bot/)
 
 ## עיצוב · `design` (4)
 
@@ -24,3 +24,9 @@
 | תאריך | כותרת | רלוונטיות | מקור |
 |---|---|---|---|
 | 2026-07-24 | [SkyReels: מחולל וידאו עוצמתי בקוד פתוח להרצה מקומית ובחינם](notes/video/2026-07-24-skyreels-free-local-and-open-source-ai-video-gener.md) | ★★★★☆ | [facebook](https://www.facebook.com/share/r/18qQGkmCk2/?mibextid=wwXIfr) |
+
+## אחר · `other` (1)
+
+| תאריך | כותרת | רלוונטיות | מקור |
+|---|---|---|---|
+| 2026-08-01 | [שלושה אתרים לפרומפטים של בינה מלאכותית, השוואת מודלים והורדת אפליקציות](notes/other/2026-08-01-three-websites-for-ai-prompts-llm-testing-and-app.md) | ★★☆☆☆ | [facebook](https://www.facebook.com/share/r/19AV4o4DPH/?mibextid=wwXIfr) |
